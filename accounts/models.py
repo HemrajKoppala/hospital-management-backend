@@ -10,11 +10,17 @@ class User(AbstractUser):
         ('PATIENT', 'Patient'),
     )
 
-    phone = models.CharField(max_length=15)
+    email = models.EmailField(unique=True)
+
+    phone = models.CharField(
+        max_length=15,
+        blank=True
+    )
 
     role = models.CharField(
         max_length=10,
-        choices=ROLE_CHOICES
+        choices=ROLE_CHOICES,
+        default='PATIENT'
     )
 
     def __str__(self):
