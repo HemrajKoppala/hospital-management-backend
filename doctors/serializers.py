@@ -7,10 +7,14 @@ User = get_user_model()
 
 class DoctorSerializer(serializers.ModelSerializer):
 
-    email = serializers.EmailField(write_only=True)
+    email = serializers.EmailField(
+    source="user.email"
+    )
 
     password = serializers.CharField(
-        write_only=True
+    write_only=True,
+    required=False,
+    allow_blank=True
     )
 
     class Meta:
@@ -33,7 +37,10 @@ class DoctorSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
 
-        email = validated_data.pop('email')
+        user_data = validated_data.pop("user")
+
+        email = user_data["email"]
+
         password = validated_data.pop('password')
 
         username = email.split("@")[0]
@@ -54,7 +61,10 @@ class DoctorSerializer(serializers.ModelSerializer):
     
     def update(self, instance, validated_data):
 
-        email = validated_data.pop("email", None)
+        user_data = validated_data.pop("user", {})
+
+        email = user_data.get("email")
+
         password = validated_data.pop("password", None)
 
         user = instance.user
